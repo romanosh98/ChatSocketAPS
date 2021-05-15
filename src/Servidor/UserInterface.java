@@ -20,7 +20,7 @@ public class UserInterface extends JFrame {
     private JList userslist = new JList();
     private PrintWriter escrever;
     private BufferedReader ler;
-
+    private JScrollPane scrollTxtAleitor = new JScrollPane(txtAleitor);
     public UserInterface(){
         //INICIO DA INTERFACE VISUAL
         setTitle("Chat Secretaria Ambiental");
@@ -30,21 +30,21 @@ public class UserInterface extends JFrame {
         txtAescreve.setBackground(Color.LIGHT_GRAY);
         add(txtAescreve, BorderLayout.SOUTH);
 
-        add(new JScrollPane(txtAleitor), BorderLayout.CENTER);
+        add(scrollTxtAleitor, BorderLayout.CENTER);
         txtAleitor.setEditable(false);
-        txtAleitor.setBackground(new Color(204, 255, 153));
+        txtAleitor.setBackground(Color.white);
         userslist.setPreferredSize(new Dimension(100, 400));
-        userslist.setBackground(Color.gray);
+        userslist.setBackground(new Color(204, 255, 153));
         add(new JScrollPane(userslist), BorderLayout.WEST);
         setSize(500,500);
-        //pack();
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        String[] usuarios = new String[]{"Gabriel","Romano","Orlando","Vi","Ga","Van","Pedro","Thiago","Julio"};
+        String[] usuarios = new String[]{""};
         gerarListaUsuarios(usuarios);
     }
 
+    //gera lista de usuarios para aparecer na interface
     private void gerarListaUsuarios(String[] usuarios) {
         DefaultListModel mod = new DefaultListModel();
         userslist.setModel(mod);
@@ -63,7 +63,7 @@ public class UserInterface extends JFrame {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_ENTER){
 
-                    if(txtAleitor.getText().isEmpty()){
+                    if(txtAescreve.getText().isEmpty()){
                         return;
                     }
 
@@ -135,12 +135,15 @@ public class UserInterface extends JFrame {
                             String username = JOptionPane.showInputDialog("Qual seu nome de usuario?");
                             escrever.println(username);
 
+                        }else if(mensagem.equals(Commands.usuarionegado)){
+                           JOptionPane.showMessageDialog (UserInterface.this, "O usuario é invalido");
+
                         }else if (mensagem.equals(Commands.usuarioaceito)){
                             atuazarUserList();
                         }else{
                             txtAleitor.append(mensagem);
                             txtAleitor.append("\n");
-                            txtAescreve.setCaretPosition(txtAescreve.getDocument().getLength());
+                            txtAleitor.setCaretPosition(txtAleitor.getDocument().getLength());
                         }
                     }
 

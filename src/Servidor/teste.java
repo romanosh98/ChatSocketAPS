@@ -14,14 +14,14 @@ import java.net.UnknownHostException;
 /**
  *
  */
-public class teste1 extends JFrame {
+public class teste extends JFrame {
     private JTextArea txtAescreve = new JTextArea("Digite uma mensagem");
     private JTextArea txtAleitor = new JTextArea();
     private JList userslist = new JList();
     private PrintWriter escrever;
     private BufferedReader ler;
-
-    public teste1(){
+    private JScrollPane scrollTxtAleitor = new JScrollPane(txtAleitor);
+    public teste(){
         //INICIO DA INTERFACE VISUAL
         setTitle("Chat Secretaria Ambiental");
         setLocationRelativeTo(null);
@@ -30,21 +30,21 @@ public class teste1 extends JFrame {
         txtAescreve.setBackground(Color.LIGHT_GRAY);
         add(txtAescreve, BorderLayout.SOUTH);
 
-        add(new JScrollPane(txtAleitor), BorderLayout.CENTER);
+        add(scrollTxtAleitor, BorderLayout.CENTER);
         txtAleitor.setEditable(false);
-        txtAleitor.setBackground(new Color(204, 255, 153));
+        txtAleitor.setBackground(Color.white);
         userslist.setPreferredSize(new Dimension(100, 400));
-        userslist.setBackground(Color.gray);
+        userslist.setBackground(new Color(204, 255, 153));
         add(new JScrollPane(userslist), BorderLayout.WEST);
         setSize(500,500);
-        //pack();
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        String[] usuarios = new String[]{"Gabriel","Romano","Orlando","Vi","Ga","Van","Pedro","Thiago","Julio"};
+        String[] usuarios = new String[]{""};
         gerarListaUsuarios(usuarios);
     }
 
+    //gera lista de usuarios para aparecer na interface
     private void gerarListaUsuarios(String[] usuarios) {
         DefaultListModel mod = new DefaultListModel();
         userslist.setModel(mod);
@@ -63,7 +63,7 @@ public class teste1 extends JFrame {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_ENTER){
 
-                    if(txtAleitor.getText().isEmpty()){
+                    if(txtAescreve.getText().isEmpty()){
                         return;
                     }
 
@@ -84,7 +84,7 @@ public class teste1 extends JFrame {
                         if(txtAleitor.getText().equalsIgnoreCase(Commands.quit)){
                             System.exit(0);
                         }
-                        JOptionPane.showMessageDialog(teste1.this, "Selecione um usuario!");
+                        JOptionPane.showMessageDialog(teste.this, "Selecione um usuario!");
                         return;
                     }
                 }
@@ -111,7 +111,7 @@ public class teste1 extends JFrame {
 
     }
     public static void main(String[] args) {
-        teste1 userchat = new teste1();
+        teste userchat = new teste();
         userchat.chatStart();
         userchat.escritorStart();
         userchat.leitorstart();
@@ -122,32 +122,35 @@ public class teste1 extends JFrame {
     }
 
     public void leitorstart(){
-                try {
-                    while (true){
-                        String mensagem = ler.readLine();
-                        if(mensagem == null || mensagem.isEmpty())
-                            continue;
+        try {
+            while (true){
+                String mensagem = ler.readLine();
+                if(mensagem == null || mensagem.isEmpty())
+                    continue;
 
-                        if(mensagem.equals(Commands.userlist)){
-                            String[] usuarios = ler.readLine().split(",");
-                            gerarListaUsuarios(usuarios);
-                        }else if(mensagem.equals(Commands.username)){
-                            String username = JOptionPane.showInputDialog("Qual seu nome de usuario?");
-                            escrever.println(username);
+                if(mensagem.equals(Commands.userlist)){
+                    String[] usuarios = ler.readLine().split(",");
+                    gerarListaUsuarios(usuarios);
+                }else if(mensagem.equals(Commands.username)){
+                    String username = JOptionPane.showInputDialog("Qual seu nome de usuario?");
+                    escrever.println(username);
 
-                        }else if (mensagem.equals(Commands.usuarioaceito)){
-                            atuazarUserList();
-                        }else{
-                            txtAleitor.append(mensagem);
-                            txtAleitor.append("\n");
-                            txtAescreve.setCaretPosition(txtAescreve.getDocument().getLength());
-                        }
-                    }
+                }else if(mensagem.equals(Commands.usuarionegado)){
+                    JOptionPane.showMessageDialog (teste.this, "O usuario é invalido");
 
-                }catch (IOException e){
-                    System.out.println("Erro na leitura da mensagem");
-                    e.printStackTrace();}
+                }else if (mensagem.equals(Commands.usuarioaceito)){
+                    atuazarUserList();
+                }else{
+                    txtAleitor.append(mensagem);
+                    txtAleitor.append("\n");
+                    txtAleitor.setCaretPosition(txtAleitor.getDocument().getLength());
+                }
             }
+
+        }catch (IOException e){
+            System.out.println("Erro na leitura da mensagem");
+            e.printStackTrace();}
+    }
 
     public DefaultListModel getUserslist() {
         return (DefaultListModel) userslist.getModel();
