@@ -1,4 +1,6 @@
-package Servidor;
+package Servidor.Viwer;
+
+import Servidor.Model.Commands;
 
 import javax.swing.*;
 import java.awt.*;

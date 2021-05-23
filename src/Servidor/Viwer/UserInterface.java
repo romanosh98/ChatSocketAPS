@@ -1,4 +1,6 @@
-package Servidor;
+package Servidor.Viwer;
+
+import Servidor.Model.Commands;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,10 +64,6 @@ public class UserInterface extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_ENTER){
-
-                    if(txtAescreve.getText().isEmpty()){
-                        return;
-                    }
 
                     Object usuario = userslist.getSelectedValue();
                     if(usuario != null){

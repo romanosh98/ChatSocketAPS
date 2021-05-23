@@ -1,4 +1,6 @@
-package Servidor;
+package Servidor.Controller;
+
+import Servidor.Model.UserManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
