@@ -11,6 +11,9 @@ public class ServidorSocket {
         ServerSocket servidor = null;
         try {
             System.out.println("Starting Server...");
+            //O socket precisa definir um número de porta para receber conexões de clientes
+            // é importante ressaltar que devemos usar somente portas a partir de 1024,
+            // pois as portas abaixo deste número são reservadas para uso do sistema
             servidor = new ServerSocket(9999);
             System.out.println("Server Started!");
 

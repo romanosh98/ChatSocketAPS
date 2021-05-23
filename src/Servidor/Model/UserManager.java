@@ -24,7 +24,9 @@ public class UserManager extends Thread{
     @Override
     public void run() {
         try {
+            //facilita na leitura de dados
             ler =  new BufferedReader(new InputStreamReader(user.getInputStream()));
+            //para facilitar o envio de dados
             escrever = new PrintWriter(user.getOutputStream(), true);
 
             startLogin();
@@ -55,7 +57,7 @@ public class UserManager extends Thread{
             e.printStackTrace();
         }
     }
-
+    //Faz o controle do nome de usuario, não permite nome null, vazio ou repetido
     private void startLogin() throws IOException {
         while (true) {
             escrever.println(Commands.username);
@@ -75,7 +77,7 @@ public class UserManager extends Thread{
             }
         }
     }
-
+    //atualizar a lista de usuarios
     private void atualizaUserList(UserManager userManager) {
         StringBuffer str = new StringBuffer();
         for(String u: users.keySet()){
@@ -93,10 +95,6 @@ public class UserManager extends Thread{
     public PrintWriter getEscritor() {
         return escrever;
     }
-
-//    public BufferedReader getLeitor() {
-//        return leitor;
-//    }
 
     public String getNomeCliente() {
         return nomeUsuario;
