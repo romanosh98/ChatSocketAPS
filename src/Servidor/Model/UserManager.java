@@ -76,7 +76,7 @@ public class UserManager extends Thread{
         while (true) {
             escrever.println(Commands.username);
             this.nomeUsuario = ler.readLine().toLowerCase().replace(",", "");
-            if(this.nomeUsuario.equals("null") || this.nomeUsuario.isEmpty()){
+            if(this.nomeUsuario.equals("null") || this.nomeUsuario.isEmpty() || this.nomeUsuario.equals("todos")){
                 escrever.println((Commands.usuarionegado));
             }else if (users.containsKey(this.nomeUsuario)) {
                 escrever.println(Commands.usuarionegado);
