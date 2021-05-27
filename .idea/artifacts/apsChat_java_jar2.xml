@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="apsChat.java:jar2">
+    <output-path>$PROJECT_DIR$/out/artifacts/apsChat_java_jar2</output-path>
+    <root id="archive" name="apsChat.java.jar">
+      <element id="module-output" name="apsChat.java" />
+    </root>
+  </artifact>
+</component>

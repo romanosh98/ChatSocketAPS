@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Servidor.java:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Servidor_java_jar</output-path>
+    <root id="archive" name="apsChat.java.jar">
+      <element id="module-output" name="apsChat.java" />
+    </root>
+  </artifact>
+</component>

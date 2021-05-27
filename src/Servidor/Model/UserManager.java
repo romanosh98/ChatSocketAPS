@@ -1,10 +1,8 @@
 package Servidor.Model;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,24 +25,37 @@ public class UserManager extends Thread{
             //facilita na leitura de dados
             ler =  new BufferedReader(new InputStreamReader(user.getInputStream()));
             //para facilitar o envio de dados
-            escrever = new PrintWriter(user.getOutputStream(), true);
+            escrever = new PrintWriter(new OutputStreamWriter(user.getOutputStream(), StandardCharsets.UTF_8), true);
 
             startLogin();
             String msg;
 
             while (true){
                 msg = ler.readLine();
-                if(msg.equals(Commands.quit)){
-                    this.user.close();
-                } else if (msg.startsWith(Commands.msg)){
+                if (msg.startsWith(Commands.msg)){
                     String nomeDestinatario = msg.substring(Commands.msg.length());
                     System.out.println("Mensagem enviada para: " + nomeDestinatario);
-                    UserManager destinatario = users.get(nomeDestinatario);
-                    if(destinatario == null){
-                        escrever.println(("Usuario não existe"));
-                    }else{
-                        destinatario.getEscritor().println(this.nomeUsuario + " disse: " + ler.readLine());
+
+
+                    if(nomeDestinatario.equals("todos")){
+                        String msgtodos=ler.readLine();
+                        for (String userDestinatario : users.keySet()) {
+                            System.out.println(userDestinatario);
+                            UserManager destinatariotodos = users.get(nomeDestinatario);
+                            if (userDestinatario != this.nomeUsuario){
+                                users.get(userDestinatario).getEscritor().println(this.nomeUsuario + " disse para todos: " + msgtodos);
+                            }
+                        }
                     }
+                    else{
+                        UserManager destinatario = users.get(nomeDestinatario);
+                        if(destinatario == null){
+                            escrever.println(("Usuario não existe"));
+                        }else{
+                            destinatario.getEscritor().println(this.nomeUsuario + " sussurrou para você: " + ler.readLine());
+                        }
+                    }
+
                 }else if (msg.equals(Commands.userlist)){
                     atualizaUserList(this);
                     }else{
@@ -54,6 +65,9 @@ public class UserManager extends Thread{
         }catch (IOException e){
             System.out.println("Usuario fechou conexao");
             users.remove(this.nomeUsuario);
+            for (String user : users.keySet()) {
+                atualizaUserList(users.get(user));
+            }
             e.printStackTrace();
         }
     }
@@ -77,13 +91,20 @@ public class UserManager extends Thread{
             }
         }
     }
+
     //atualizar a lista de usuarios
     private void atualizaUserList(UserManager userManager) {
         StringBuffer str = new StringBuffer();
+        int qtdUsuarios=0;
         for(String u: users.keySet()){
+            qtdUsuarios+=1;
             if(userManager.getNomeCliente().equals(u))
                 continue;
             str.append(u);
+            str.append(",");
+        }
+        if(qtdUsuarios>=3){
+            str.append("todos");
             str.append(",");
         }
         if(str.length()>0)

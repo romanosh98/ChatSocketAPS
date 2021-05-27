@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,9 +15,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-/**
- *
- */
+
 public class UserInterface extends JFrame {
     private JTextArea txtAescreve = new JTextArea("Digite uma mensagem");
     private JTextArea txtAleitor = new JTextArea();
@@ -30,6 +30,7 @@ public class UserInterface extends JFrame {
         setLayout(new BorderLayout());
         txtAescreve.setPreferredSize(new Dimension(500,40));
         txtAescreve.setBackground(Color.LIGHT_GRAY);
+        txtAescreve.setToolTipText("Digite uma mensagem");
         add(txtAescreve, BorderLayout.SOUTH);
 
         add(scrollTxtAleitor, BorderLayout.CENTER);
@@ -44,6 +45,15 @@ public class UserInterface extends JFrame {
 
         String[] usuarios = new String[]{""};
         gerarListaUsuarios(usuarios);
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                escrever.println(Commands.userlist);
+                    System.exit(0);
+                }
+
+        });
     }
 
     //gera lista de usuarios para aparecer na interface
@@ -56,6 +66,15 @@ public class UserInterface extends JFrame {
     }
 
     private void escritorStart() {
+        txtAescreve.addMouseListener(new MouseAdapter()
+        {
+            public void mouseClicked(MouseEvent me) {
+                String txt = txtAescreve.getText().trim();
+                if(txt.equals("Digite uma mensagem")){
+                    txtAescreve.setText("");
+                }
+            }
+        });
         txtAescreve.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -68,7 +87,12 @@ public class UserInterface extends JFrame {
                     Object usuario = userslist.getSelectedValue();
                     if(usuario != null){
                         //envia a mensagem para tela (txtAleitor), tela usada para receber as mensagens
-                        txtAleitor.append("Eu: ");
+                        String msg=txtAescreve.getText().trim();
+                        if(msg == null || msg.isEmpty()){
+                            JOptionPane.showMessageDialog(UserInterface.this, "Digite uma mensagem");
+                            return;
+                        }
+                        txtAleitor.append("Eu para "+ usuario + " :");
                         txtAleitor.append(txtAescreve.getText());
                         txtAleitor.append("\n");
 
@@ -79,9 +103,6 @@ public class UserInterface extends JFrame {
                         e.consume();
 
                     }else{
-                        if(txtAleitor.getText().equalsIgnoreCase(Commands.quit)){
-                            System.exit(0);
-                        }
                         JOptionPane.showMessageDialog(UserInterface.this, "Selecione um usuario!");
                         return;
                     }
@@ -113,6 +134,7 @@ public class UserInterface extends JFrame {
         userchat.chatStart();
         userchat.escritorStart();
         userchat.leitorstart();
+
     }
 
     public void atuazarUserList(){
@@ -122,9 +144,7 @@ public class UserInterface extends JFrame {
     public void leitorstart(){
                 try {
                     while (true){
-                        String mensagem = ler.readLine();
-                        if(mensagem == null || mensagem.isEmpty())
-                            continue;
+                        String mensagem = new String(ler.readLine().getBytes(), "UTF-8");
 
                         if(mensagem.equals(Commands.userlist)){
                             String[] usuarios = ler.readLine().split(",");
@@ -132,6 +152,7 @@ public class UserInterface extends JFrame {
                         }else if(mensagem.equals(Commands.username)){
                             String username = JOptionPane.showInputDialog("Qual seu nome de usuario?");
                             escrever.println(username);
+                            this.setTitle("Chat Secretaria Ambiental - "+ username);
 
                         }else if(mensagem.equals(Commands.usuarionegado)){
                            JOptionPane.showMessageDialog (UserInterface.this, "O usuario é invalido");

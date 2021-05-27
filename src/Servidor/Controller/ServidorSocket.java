@@ -2,7 +2,11 @@ package Servidor.Controller;
 
 import Servidor.Model.UserManager;
 
+import javax.swing.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -16,6 +20,7 @@ public class ServidorSocket {
             // pois as portas abaixo deste número são reservadas para uso do sistema
             servidor = new ServerSocket(9999);
             System.out.println("Server Started!");
+            JOptionPane.showMessageDialog(null, "Servidor iniciado com sucesso");
 
             while (true){
                 Socket user = servidor.accept();
